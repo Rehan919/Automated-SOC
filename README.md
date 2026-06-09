@@ -25,6 +25,8 @@ for forensics.
 
 ---
 
+>  **Rebuild / setup guide:** for the complete step-by-step (fresh clone -> running lab, with gotchas and fixes) see **[documentation/SETUP.md](documentation/SETUP.md)**.
+
 ## Architecture
 
 ```mermaid
