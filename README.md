@@ -25,6 +25,32 @@ for forensics.
 
 ---
 
+## Architecture
+
+```mermaid
+flowchart TD
+  EP["Endpoints<br/>(Linux / Windows)<br/>Wazuh agent"] --> MGR["Wazuh Manager<br/>detection rules"]
+  MGR --> IDX[("Wazuh Indexer<br/>hot search")]
+  MGR -->|"alert level &gt;= 7"| RES["Responder<br/>(auto)"]
+  RES --> TH["TheHive<br/>case + IP observable"]
+  TH <--> CTX["Cortex<br/>VirusTotal + AbuseIPDB"]
+  MGR -. alerts .-> SHUF["Shuffle SOAR"]
+  IDX --> COLD[("Cold archive<br/>gzip + sha256 + metadata")]
+```
+
+## Screenshots
+
+> Drop your own screenshots into `docs/images/` with the names below
+> (capture with **Win+Shift+S** on Windows, or your OS snip tool) and they appear here.
+
+| Wazuh dashboard | TheHive case |
+|---|---|
+| ![Wazuh dashboard](docs/images/wazuh-dashboard.png) | ![TheHive case](docs/images/thehive-case.png) |
+| **Cortex enrichment** | **Shuffle SOAR** |
+| ![Cortex](docs/images/cortex.png) | ![Shuffle](docs/images/shuffle.png) |
+
+---
+
 ## 1. What you need (requirements)
 
 | Requirement | Details |
