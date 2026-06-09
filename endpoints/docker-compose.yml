@@ -1,0 +1,35 @@
+# Lab endpoints on the soc-lab network.
+#  - ubuntu-ssh-target : SSH brute-force victim, runs a Wazuh agent
+#  - attacker          : drives the SSH brute force (manual / on-demand only)
+# The Windows host is a third endpoint (native Wazuh agent + Sysmon) -- see
+# endpoints/windows-sysmon/README.md (not a container).
+# (The agent entrypoint retries manager enrollment, so no cross-file depends_on
+#  on wazuh.manager is needed; bring the Wazuh stack up first.)
+services:
+  ubuntu-ssh-target:
+    build: ./ubuntu-ssh-target
+    image: soc-lab/ubuntu-ssh-target:1.0
+    container_name: ubuntu-ssh-target
+    hostname: ubuntu-ssh-target
+    restart: unless-stopped
+    networks: [soc-lab]
+    cap_add: ["NET_ADMIN"]          # required so active-response can run iptables (Task 11)
+    ports:
+      - "127.0.0.1:2222:22"          # optional host access for manual testing
+
+  attacker:
+    build: ./attacker
+    image: soc-lab/attacker:1.0
+    container_name: attacker
+    networks: [soc-lab]
+    profiles: ["attack"]            # only runs when explicitly invoked
+    environment:
+      - TARGET=ubuntu-ssh-target
+      - SSH_USER=devops
+    depends_on:
+      - ubuntu-ssh-target
+
+networks:
+  soc-lab:
+    name: soc-lab
+    driver: bridge

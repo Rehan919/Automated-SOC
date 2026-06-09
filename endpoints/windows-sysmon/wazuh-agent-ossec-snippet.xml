@@ -1,0 +1,10 @@
+<!--
+  Add this <localfile> block inside the <ossec_config> in the Windows agent
+  config: C:\Program Files (x86)\ossec-agent\ossec.conf
+  Then restart the agent:  Restart-Service WazuhSvc
+  It forwards Sysmon events to the Wazuh manager for the PowerShell detection.
+-->
+<localfile>
+  <location>Microsoft-Windows-Sysmon/Operational</location>
+  <log_format>eventchannel</log_format>
+</localfile>

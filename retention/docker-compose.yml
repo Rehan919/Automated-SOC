@@ -1,0 +1,21 @@
+# Cold-archive job: daily gzip + sha256 + metadata of Wazuh alerts.
+# Shares the Wazuh logs volume (read-only) and writes to retention/archive/.
+# One-shot run for the demo:  docker compose run --rm retention /archive.sh
+services:
+  retention:
+    build: .
+    image: soc-lab/retention:1.0
+    container_name: soc-lab-retention
+    networks: [soc-lab]
+    volumes:
+      - wazuh_logs:/wazuh-logs:ro
+      - ./archive:/archive
+    restart: unless-stopped
+
+volumes:
+  wazuh_logs:
+
+networks:
+  soc-lab:
+    name: soc-lab
+    driver: bridge

@@ -1,0 +1,35 @@
+title: Suspicious PowerShell Command Line
+id: 6f3a1d20-2c11-4f7a-9d2e-9b1f0c0a0002
+status: experimental
+description: Detects PowerShell launched with encoding, download cradles, hidden window or profile/AMSI bypass flags.
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+author: SOC-Lab
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_img:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+  selection_flags:
+    CommandLine|contains:
+      - '-enc'
+      - 'EncodedCommand'
+      - 'DownloadString'
+      - 'DownloadFile'
+      - 'IEX'
+      - 'FromBase64String'
+      - '-w hidden'
+      - '-WindowStyle Hidden'
+      - '-nop'
+      - 'ExecutionPolicy Bypass'
+  condition: selection_img and selection_flags
+fields:
+  - CommandLine
+  - ParentImage
+level: high
+tags:
+  - attack.execution
+  - attack.t1059.001

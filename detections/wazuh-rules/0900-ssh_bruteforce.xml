@@ -1,0 +1,18 @@
+<!--
+  SOC-Lab detection-as-code
+  SSH brute force (MITRE ATT&CK T1110 - Brute Force)
+  Composite rule: fires when the same source IP causes >= 6 sshd auth
+  failures within 120s. Level 12 => TheHive "Medium" (Shuffle severity map).
+  Custom rule IDs are in the 100000+ range as required by Wazuh.
+-->
+<group name="syslog,sshd,soc-lab,">
+  <rule id="100100" level="12" frequency="6" timeframe="120">
+    <if_matched_sid>5760</if_matched_sid>
+    <same_source_ip />
+    <description>SOC: SSH brute force - 6+ failed logins from $(srcip)</description>
+    <group>authentication_failures,pci_dss_11.4,gdpr_IV_35.7.d,</group>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+  </rule>
+</group>

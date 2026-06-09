@@ -1,0 +1,20 @@
+---
+# Internal user DB for the Wazuh indexer (OpenSearch security).
+# These are the upstream DEMO bcrypt hashes (admin -> "SecretPassword",
+# kibanaserver -> "kibanaserver"). Rotate to match your .env BEFORE first boot:
+#   bash scripts/wazuh-change-passwords.sh
+_meta:
+  type: "internalusers"
+  config_version: 2
+
+admin:
+  hash: "$2y$12$K/SpwjtB.wOHJ/Nc6GVRDuc1h0rM1DfvziFRNPtk27P.c4yDr9njO"
+  reserved: true
+  backend_roles:
+    - "admin"
+  description: "Wazuh indexer admin"
+
+kibanaserver:
+  hash: "$2a$12$4AcgAt3xwOWadA5s5blL6ev39OXDNhmOesEoo33eZtrq2N0YrU3H."
+  reserved: true
+  description: "Wazuh dashboard server user"

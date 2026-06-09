@@ -1,0 +1,17 @@
+# SOC auto-responder: Wazuh integrator -> creates TheHive cases automatically.
+services:
+  responder:
+    build: .
+    image: soc-lab/responder:1.0
+    container_name: soc-responder
+    hostname: responder
+    networks: [soc-lab]
+    environment:
+      - THEHIVE_URL=http://thehive:9000
+      - THEHIVE_API_KEY=${THEHIVE_API_KEY}
+    restart: unless-stopped
+
+networks:
+  soc-lab:
+    name: soc-lab
+    driver: bridge

@@ -1,0 +1,60 @@
+# Cortex stack: dedicated Elasticsearch + Cortex.
+# Cortex runs analyzers as Docker containers (needs the Docker socket and a
+# shared job directory). Served on 127.0.0.1:9001.
+services:
+  cortex-elasticsearch:
+    image: elasticsearch:7.17.23
+    container_name: cortex-elasticsearch
+    hostname: cortex-elasticsearch
+    restart: unless-stopped
+    networks: [soc-lab]
+    environment:
+      - discovery.type=single-node
+      - cluster.name=cortex
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock: {soft: -1, hard: -1}
+      nofile: {soft: 65536, hard: 65536}
+    volumes:
+      - cortex-es-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -f http://localhost:9200/_cat/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  cortex:
+    image: thehiveproject/cortex:3.1.8
+    container_name: cortex
+    hostname: cortex
+    restart: unless-stopped
+    networks: [soc-lab]
+    depends_on:
+      cortex-elasticsearch: {condition: service_healthy}
+    environment:
+      # HOCON ${?CORTEX_SECRET} substitution in application.conf reads this:
+      - CORTEX_SECRET=${CORTEX_SECRET}
+    volumes:
+      - ./config/cortex-application.conf:/etc/cortex/application.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Same path both sides so analyzer sibling-containers can mount job dirs:
+      - /tmp/cortex-jobs:/tmp/cortex-jobs
+    ports:
+      - "127.0.0.1:9001:9001"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -f http://localhost:9001/api/status || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 90s
+
+volumes:
+  cortex-es-data:
+
+networks:
+  soc-lab:
+    name: soc-lab
+    driver: bridge

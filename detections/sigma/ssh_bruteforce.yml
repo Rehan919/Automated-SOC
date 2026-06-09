@@ -1,0 +1,22 @@
+title: SSH Brute Force - Multiple Failed Logins From Single Source
+id: 6f3a1d20-2c11-4f7a-9d2e-9b1f0c0a0001
+status: experimental
+description: Detects >= 6 failed SSH password authentications from one source IP within 2 minutes.
+references:
+  - https://attack.mitre.org/techniques/T1110/
+author: SOC-Lab
+logsource:
+  product: linux
+  service: sshd
+detection:
+  selection:
+    message|contains: 'Failed password'
+  timeframe: 2m
+  condition: selection | count() by src_ip >= 6
+fields:
+  - src_ip
+  - user
+level: high
+tags:
+  - attack.credential_access
+  - attack.t1110

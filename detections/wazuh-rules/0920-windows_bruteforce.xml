@@ -1,0 +1,17 @@
+<!--
+  SOC-Lab detection-as-code
+  Windows logon brute force / password spray (MITRE ATT&CK T1110)
+  Composite: 6+ failed Windows logons (rule 60122 / Event 4625) on the same
+  host within 120s -> level 12. Correlates on frequency alone, so it catches
+  both single-account brute force and multi-account password spraying.
+-->
+<group name="windows,authentication_failures,soc-lab,">
+  <rule id="100300" level="12" frequency="6" timeframe="120">
+    <if_matched_sid>60122</if_matched_sid>
+    <description>SOC: Windows logon brute force - 6+ failed logons on $(win.system.computer)</description>
+    <group>authentication_failures,pci_dss_11.4,gdpr_IV_35.7.d,</group>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+  </rule>
+</group>

@@ -1,0 +1,19 @@
+<!--
+  SOC-Lab detection-as-code
+  Suspicious PowerShell execution (MITRE ATT&CK T1059.001)
+  Source: Sysmon Event ID 1 (process creation) via the Windows Wazuh agent.
+  Matches powershell/pwsh launched with encoding, download-cradle, hidden
+  window, or AMSI/profile bypass flags. Level 13 => TheHive "Critical".
+-->
+<group name="sysmon,windows,soc-lab,">
+  <rule id="100200" level="13">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\(powershell|pwsh)\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(-enc\b|-encodedcommand|downloadstring|downloadfile|invoke-expression|\biex\b|frombase64string|-w\s+hidden|-windowstyle\s+hidden|-nop\b|-noprofile|-exec(ution)?\s*bypass)</field>
+    <description>SOC: Suspicious PowerShell on $(win.system.computer)</description>
+    <group>powershell,sysmon_event1,</group>
+    <mitre>
+      <id>T1059.001</id>
+    </mitre>
+  </rule>
+</group>

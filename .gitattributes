@@ -1,0 +1,5 @@
+# Keep Linux-consumed files as LF (containers break on CRLF); PS1 as CRLF.
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.png binary
+*.jpg binary

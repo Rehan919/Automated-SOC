@@ -1,0 +1,7 @@
+# Copy this file to %USERPROFILE%\.wslconfig then run: wsl --shutdown
+# Requires a host with >= 16 GB system RAM. Docker Desktop uses the WSL2 backend.
+[wsl2]
+memory=12GB
+processors=6
+swap=8GB
+kernelCommandLine = sysctl.vm.max_map_count=262144

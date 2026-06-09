@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-06-04T21:00:07.000+0000",
+  "rule": {
+    "level": 12,
+    "id": "100100",
+    "description": "SOC: SSH brute force - 6+ failed logins from 45.155.205.99",
+    "mitre": {"id": ["T1110"], "tactic": ["Credential Access"], "technique": ["Brute Force"]},
+    "groups": ["syslog", "sshd", "soc-lab", "authentication_failures"]
+  },
+  "agent": {"id": "001", "name": "ubuntu-ssh-target", "ip": "172.20.0.5"},
+  "manager": {"name": "wazuh.manager"},
+  "data": {"srcip": "45.155.205.99", "srcuser": "devops", "srcport": "50132"},
+  "full_log": "Jun  4 21:00:07 ubuntu-ssh-target sshd[1207]: Failed password for devops from 45.155.205.99 port 50132 ssh2",
+  "location": "/var/log/auth.log"
+}

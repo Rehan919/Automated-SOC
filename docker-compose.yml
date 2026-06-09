@@ -1,0 +1,21 @@
+# ============================================================
+# SOC Automation Lab v2 -- root orchestrator
+# Single "docker compose up" brings up the whole lab.
+# Each component lives in its own folder, pulled in via include.
+# The shared network soc-lab is declared (with a fixed name) by every
+# component file, so they share one Docker network and each file is
+# also runnable standalone for per-task testing.
+# ============================================================
+include:
+  - wazuh/docker-compose.yml
+  - endpoints/docker-compose.yml
+  - thehive/docker-compose.yml
+  - cortex/docker-compose.yml
+  - shuffle/docker-compose.yml
+  - retention/docker-compose.yml
+  - responder/docker-compose.yml
+
+networks:
+  soc-lab:
+    name: soc-lab
+    driver: bridge

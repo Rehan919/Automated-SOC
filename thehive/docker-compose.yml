@@ -1,0 +1,97 @@
+# TheHive 5 stack: Cassandra (DB) + Elasticsearch (index) + TheHive (app).
+# Lean lab profile (no nginx reverse proxy); TheHive served on 127.0.0.1:9000.
+# Secret + Cortex wiring come from .env. Default login after first boot:
+# admin@thehive.local / secret  -> CHANGE IT immediately (see thehive/README.md).
+services:
+  cassandra:
+    image: cassandra:4.1.6
+    container_name: cassandra
+    hostname: cassandra
+    restart: unless-stopped
+    networks: [soc-lab]
+    environment:
+      - CASSANDRA_CLUSTER_NAME=thehive
+      - HEAP_NEWSIZE=512M
+      - MAX_HEAP_SIZE=1024M
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'describe keyspaces' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
+
+  elasticsearch:
+    image: elasticsearch:7.17.23
+    container_name: elasticsearch
+    hostname: elasticsearch
+    restart: unless-stopped
+    networks: [soc-lab]
+    environment:
+      - discovery.type=single-node
+      - cluster.name=thehive
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock: {soft: -1, hard: -1}
+      nofile: {soft: 65536, hard: 65536}
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -f http://localhost:9200/_cat/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  thehive:
+    image: strangebee/thehive:5.2.13
+    container_name: thehive
+    hostname: thehive
+    restart: unless-stopped
+    networks: [soc-lab]
+    depends_on:
+      cassandra: {condition: service_healthy}
+      elasticsearch: {condition: service_healthy}
+    environment:
+      - |
+        JAVA_OPTS=
+          -Xms1024m
+          -Xmx1024m
+    command:
+      - --secret
+      - ${THEHIVE_SECRET}
+      - --cql-hostnames
+      - cassandra
+      - --index-backend
+      - elasticsearch
+      - --es-hostnames
+      - elasticsearch
+      - --cortex-hostnames
+      - cortex
+      - --cortex-port
+      - "9001"
+      - --cortex-keys
+      - ${CORTEX_API_KEY}
+    volumes:
+      - thehive-data:/opt/thp/thehive/files
+    ports:
+      - "127.0.0.1:9000:9000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -f http://localhost:9000/api/status || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
+
+volumes:
+  cassandra-data:
+  es-data:
+  thehive-data:
+
+networks:
+  soc-lab:
+    name: soc-lab
+    driver: bridge

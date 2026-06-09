@@ -1,0 +1,7 @@
+Jun  4 21:00:01 ubuntu-ssh-target sshd[1201]: Failed password for devops from 45.155.205.99 port 50122 ssh2
+Jun  4 21:00:02 ubuntu-ssh-target sshd[1202]: Failed password for devops from 45.155.205.99 port 50124 ssh2
+Jun  4 21:00:03 ubuntu-ssh-target sshd[1203]: Failed password for devops from 45.155.205.99 port 50126 ssh2
+Jun  4 21:00:04 ubuntu-ssh-target sshd[1204]: Failed password for devops from 45.155.205.99 port 50128 ssh2
+Jun  4 21:00:05 ubuntu-ssh-target sshd[1205]: Failed password for devops from 45.155.205.99 port 50130 ssh2
+Jun  4 21:00:06 ubuntu-ssh-target sshd[1206]: Failed password for devops from 45.155.205.99 port 50132 ssh2
+Jun  4 21:00:07 ubuntu-ssh-target sshd[1207]: Failed password for devops from 45.155.205.99 port 50134 ssh2

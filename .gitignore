@@ -1,0 +1,33 @@
+# Secrets & local artifacts -- never commit
+.env
+backups/*
+!backups/.gitkeep
+
+# Generated certs / data
+wazuh/config/wazuh_indexer_ssl_certs/
+**/data/
+*.pem
+*.key
+*.crt
+!**/*-example*
+
+# Response safety DB (runtime state)
+scripts/responses.db
+
+# Cold archive output
+retention/archive/*
+!retention/archive/.gitkeep
+
+# OS noise
+Thumbs.db
+.DS_Store
+# Shuffle runtime/secrets
+shuffle/.env
+shuffle/shuffle-apps/*
+!shuffle/shuffle-apps/.gitkeep
+shuffle/shuffle-files/*
+!shuffle/shuffle-files/.gitkeep
+
+# Python build artifacts
+__pycache__/
+*.pyc
