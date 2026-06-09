@@ -40,14 +40,21 @@ flowchart TD
 
 ## Screenshots
 
-> Drop your own screenshots into `docs/images/` with the names below
-> (capture with **Win+Shift+S** on Windows, or your OS snip tool) and they appear here.
+**Wazuh dashboard** - 2 agents active (the Ubuntu SSH container + a real Windows 10 laptop) and the last-24h alert counts bucketed by severity, alongside the endpoint-security and threat-intelligence modules.
 
-| Wazuh dashboard | TheHive case |
-|---|---|
-| ![Wazuh dashboard](docs/images/wazuh-dashboard.png) | ![TheHive case](docs/images/thehive-case.png) |
-| **Cortex enrichment** | **Shuffle SOAR** |
-| ![Cortex](docs/images/cortex.png) | ![Shuffle](docs/images/shuffle.png) |
+![Wazuh dashboard](docs/images/wazuh-dashboard.png)
+
+**TheHive case (auto-created) + Cortex enrichment** - an SSH brute-force alert turned into case #5; the source IP `172.19.0.17` was added as an observable and automatically enriched by Cortex - note the VirusTotal (`VT:GetReport`) and AbuseIPDB (`Score`, `Reports`, `Usage`) verdict tags.
+
+![TheHive case with Cortex enrichment](docs/images/thehive-case.png)
+
+**Shuffle SOAR - "SOC Pipeline" workflow** - the webhook trigger that receives Wazuh alerts, wired to the case-creation step, shown in the Running state.
+
+![Shuffle SOC Pipeline workflow](docs/images/shuffle.png)
+
+**Cortex - `soc-lab` organization** - the analyzer service account (roles: read, analyze, orgAdmin) and its API key, which TheHive uses to run the VirusTotal and AbuseIPDB analyzers.
+
+![Cortex organization and analyzers](docs/images/cortex.png)
 
 ---
 
